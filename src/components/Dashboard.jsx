@@ -1,11 +1,10 @@
 import React from "react";
-import loginbg from "../assets/loginbg.png";
+import dashboardbg from "../assets/dashboardbg.png";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import { gql, useQuery } from "@apollo/client";
 import {useLocation} from 'react-router-dom';
-import { SearchIcon } from "@heroicons/react/solid";
-import { TextInput } from "@tremor/react";
+
 
 const GET_CAR_DATA = gql`
   query Query($username: String!) {
@@ -15,6 +14,7 @@ const GET_CAR_DATA = gql`
       id
       entryStatus
       Bays {
+        bayNum
         imageLink
       }
     }
@@ -46,26 +46,26 @@ const Dashboard = () => {
   if (error) return <p>Error: {error.message}</p>;
     
   return data?(
-    <div className="">
-      <div
-      id="top"
-      className="relative w-full sm:flex justify-between items-center p-2"
-    >
-      <h1 className="font-bold text-gray-300">Dashboard</h1>
-      <div className="py-2">
-        <TextInput icon={SearchIcon} placeholder="Search..." />
-      </div>
-    </div>
-        {/* <nav className="bg-black">
+    <div
+    className="bg-gradient-to-r from-slate-400 to-gray-400"
+    style={{
+      
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      height: "100vh",
+      width: "100vw"
+    }}
+  >
+        <nav className="">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              <span className="text-white font-bold text-lg">Eyepark</span>
-              <span className="text-white font-bold text-lg">
+              <span className="text-black font-bold text-lg">Eyepark</span>
+              <span className="text-black font-bold text-lg">
                 User Dashboard
               </span>
               <div>
                 <button
-                  className="text-white hover:text-gray-300"
+                  className="text-black font-bold text-lg hover:text-gray-300"
                   onClick={handleLogout}
                 >
                   Log Out
@@ -74,19 +74,71 @@ const Dashboard = () => {
             </div>
           </div>
         </nav>
-         */}
+        <div className='p-4'>
+        <div className='w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto'>
+          <div className='my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
+            <span>Car Number</span>
+            <span className='sm:text-left text-right'>Car RFID Tag</span>
+            <span className='hidden md:grid'>Status of Car</span>
+            <span className='hidden sm:grid'>Car Image</span>
+          </div>
+          <ul>
+            {data.listCarDetails.map((item) => (
+              <li
+                key={item.id}
+                className='bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'
+              >
+                {item.carNum}
+                <div className='flex'>
+                  <div className='bg-purple-100 p-3 rounded-lg'>
+                    <div className='text-purple-800' />
+                    {item.rfidTag}
+                  </div>
+                </div>
+                <p className='text-gray-600 sm:text-left text-right'>
+                  <span
+                    className={
+                      item.entryStatus == 'true'
+                        ? 'bg-green-200 p-2 rounded-lg'
+                        : item.entryStatus == 'false'
+                        ? 'bg-red-200 p-2 rounded-lg'
+                        : 'bg-green-200 p-2 rounded-lg'
+                    }
+                  >
+                    {item.entryStatus?"Parked":"Not Parked"}
+                  </span>
+                </p>
+                <div className='flex'>
+                  <div className='bg-white p-3 rounded-lg'>
+                    <div className='text-purple-800' />
+                    {item?.Bays.length === 0 ?  (
+                    <p>No Image</p>
+                    ) : (
+                    <button
+                    onClick={() => window.open(item?.Bays[0]?.imageLink[0], "_blank")}
+                    >
+                      View Car
+                      </button>
+                      )}
+                  </div>
+                </div>
 
-        <div className="container bg-white mx-auto p-4">
+                
+              </li>
+            ))}
+          </ul>
+        {/* <div className="container bg-white mx-auto p-4 rounded-lg mt-2" 
+        style={{ maxWidth: "1200px" }}>
           <table className="w-full">
             <thead>
               <tr>
-                <th className="py-2 border-b border-gray-300">Car Number</th>
-                <th className="py-2 border-b border-gray-300">Car RFID Tag</th>
-                <th className="py-2 border-b border-gray-300">Status of Car</th>
-                <th className="py-2 border-b border-gray-300">Car Image</th>
+                <span className="py-2 border-b border-gray-300">Car Number</span>
+                <span className="py-2 border-b border-gray-300">Car RFID Tag</span>
+                <span className="py-2 border-b border-gray-300">Status of Car</span>
+                <span className="py-2 border-b border-gray-300">Car Image</span>
               </tr>
-            </thead>
-            <tbody>
+            </thead> */}
+            {/* <tbody>
               {data.listCarDetails.map((item) => (
                 <tr key={item.id}>
                   <td className="py-2 border-b border-gray-300 text-center">
@@ -111,11 +163,12 @@ const Dashboard = () => {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
+            </tbody> */}
+            </div>
+          {/* </table> */}
         </div>
       </div>
-    // </div>
+
   ):(<p>No Registered Cars</p>);
 };
 
