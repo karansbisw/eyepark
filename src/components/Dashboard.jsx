@@ -1,7 +1,5 @@
-import React from "react";
-import dashboardbg from "../assets/dashboardbg.png";
+import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import Login from "./Login";
 import { gql, useQuery } from "@apollo/client";
 import {useLocation} from 'react-router-dom';
 
@@ -22,6 +20,9 @@ const GET_CAR_DATA = gql`
 `;
 
 function GetCarDataQuery (username) { 
+  useEffect(() => {
+    document.title = 'EyePark | Dashboard';
+  }, []);
   const { loading, error, data } = useQuery(GET_CAR_DATA, {
     variables: {
       username: username,
@@ -59,13 +60,13 @@ const Dashboard = () => {
         <nav className="">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              <span className="text-black font-bold text-lg">Eyepark</span>
-              <span className="text-black font-bold text-lg">
+              <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">Eyepark</span>
+              <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">
                 User Dashboard
               </span>
               <div>
                 <button
-                  className="text-black font-bold text-lg hover:text-gray-300"
+                  className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white hover:text-gray-300"
                   onClick={handleLogout}
                 >
                   Log Out
@@ -98,9 +99,9 @@ const Dashboard = () => {
                 <p className='text-gray-600 sm:text-left text-right'>
                   <span
                     className={
-                      item.entryStatus == 'true'
+                      item.entryStatus === 'true'
                         ? 'bg-green-200 p-2 rounded-lg'
-                        : item.entryStatus == 'false'
+                        : item.entryStatus === 'false'
                         ? 'bg-red-200 p-2 rounded-lg'
                         : 'bg-green-200 p-2 rounded-lg'
                     }

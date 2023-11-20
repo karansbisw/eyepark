@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import loginbg from "../assets/loginbg.png";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -26,10 +26,13 @@ return {data, loading, refetch, error}
 };
 
 function Login() {
+  useEffect(() => {
+    document.title = 'EyePark | Login';
+  }, []);
   const navigate = useNavigate();
   const [sid, setSid] = useState("");
   const [username, setUsername] = useState("");
-  const {data, loading, refetch, error } = VerifyUserQuery(username, sid);
+  const {data, refetch, error } = VerifyUserQuery(username, sid);
   if (error)
   { 
     alert(error)
@@ -47,12 +50,15 @@ function Login() {
     } else {
       alert("Invalid SID or username");
     }}
+    else {
+      alert("Invalid SID or username");
+    }
     
   };
 
-  const handleLogout =() =>{
-    navigate("/Login")
-  };
+  // const handleLogout =() =>{
+  //   navigate("/Login")
+  // };
   const handleSidChange = (e) => {
     setSid(e.target.value);
   };
