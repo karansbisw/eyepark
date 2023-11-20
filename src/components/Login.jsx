@@ -1,36 +1,58 @@
 import React, { useState } from "react";
 import loginbg from "../assets/loginbg.png";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 
 
-// const LOGIN_MUTATION= gql`
-//   mutation Login($SID: String!, $Username: String!){
+const LOGIN_VERIFY= gql`
+query CheckUser($username: String!, $studentId: String!) {
+  checkUser(username: $username, studentID: $studentId) {
+    name
+    studentID
+    username
+  }
+}
+`;
 
-//   login(sid: $sid, Username: $Username){
-//     success
-//   }
-//   }
-// `;
+function VerifyUserQuery (username, sid) {    
+  const {data, loading,refetch, error } = useQuery(LOGIN_VERIFY, {
+  variables: {
+    username: username,
+    studentId: sid,
+  },
+})
+return {data, loading, refetch, error}
+};
 
 function Login() {
   const navigate = useNavigate();
   const [sid, setSid] = useState("");
   const [username, setUsername] = useState("");
+  const {data, loading, refetch, error } = VerifyUserQuery(username, sid);
+  if (error)
+  { 
+    alert(error)
+  }
 
+  console.log(data)
   const handleLogin = (e) => {
     e.preventDefault();
-    if (sid === "yourSID" && username === "yourUsername") {
-      navigate("/Dashboard");
+    refetch();
+    if(data.checkUser != null){
+    if(data.checkUser.username === username && data.checkUser.studentID === sid){
+      navigate("/Dashboard",{state:{
+        username: username,
+      }});
     } else {
-      console.log("Invalid SID or username");
-    }
+      alert("Invalid SID or username");
+    }}
+    
   };
 
-  const handleLogout =() =>{
-    navigate("/Login")
-  };
+  // const handleLogout =() =>{
+  //   navigate("/Login")
+  // };
   const handleSidChange = (e) => {
     setSid(e.target.value);
   };
@@ -47,7 +69,6 @@ function Login() {
         src={loginbg}
         alt="/"
       />
-
       <div className="flex justify-center items-center h-full">
         <form
           className="max-w-[400px] w-full mx-auto bg-white p-8"

@@ -2,48 +2,46 @@ import React from "react";
 import loginbg from "../assets/loginbg.png";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
-import { useQuery } from "@apollo/client";
-
+import { gql, useQuery } from "@apollo/client";
+import {useLocation} from 'react-router-dom';
 
 const GET_CAR_DATA = gql`
-  query GetCarData {
-    cars {
-      SID
-      Cars Parked
-      Car Status
-      Car Link
-    }
+query ListCarDetails($username: String!) {
+  listCarDetails(username: $username) {
+    id
+    name
+    carNum
+    studentID
+    rfidTag
+    entryStatus
   }
+}
 `;
+
+function GetCarDataQuery (username) { 
+  const { loading, error, data } = useQuery(GET_CAR_DATA, {
+    variables: {
+      username: username,
+    },
+  });
+  return { loading, error, data };
+}
 const Dashboard = () => {
     const navigate = useNavigate();
+    const location  = useLocation();
 
     const handleLogout= () => {
       console.log("Logout button clicked");
         navigate("/Login");
     };
-
-
-  //   const { loading, error, data } = useQuery(GET_CAR_DATA);
-
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p>Error: {error.message}</p>;
-     const data = [
-        {
-      SID: "001",
-      carParks: "Car Park A",
-      status: "Available",
-      carLink: "https://example.com/car1",
-    },
-    {
-      SID: "002",
-      carParks: "Car Park B",
-      status: "Occupied",
-      carLink: "https://example.com/car2",
-    },
-  ];
-
-  return (
+  console.log(location.state.username);
+  const username  = location.state.username?location.state.username:"";
+  const { loading, error, data } = GetCarDataQuery(username);
+  
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+    
+  return data?(
     <div>
       <div className="relative w-full h-screen bg-zinc-900/90">
         <img
@@ -80,19 +78,19 @@ const Dashboard = () => {
                 <th className="py-2 border-b border-gray-300">Car Image</th>
               </tr>
             </thead>
-            {/* <tbody>
-              {data.cars.map((item) => (
-                <tr key={item.SID}>
+            <tbody>
+              {data.listCarDetails.map((item) => (
+                <tr key={item.id}>
                   <td className="py-2 border-b border-gray-300 text-center">
-                    {item.SID}
+                    {item.id}
                   </td>
                   <td className="py-2 border-b border-gray-300 text-center">
-                    {item.carParks}
+                    {item.carNum}
                   </td>
                   <td className="py-2 border-b border-gray-300 text-center">
-                    {item.status}
+                    {item.entryStatus?"true":"false"}
                   </td>
-                  <td className="py-2 border-b border-gray-300 text-center">
+                  {/* <td className="py-2 border-b border-gray-300 text-center">
                     <a
                       href={item.carLink}
                       target="_blank"
@@ -100,32 +98,7 @@ const Dashboard = () => {
                     >
                       View Car
                     </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody> */}
-
-            <tbody>
-              {data.map((item) => (
-                <tr key={item.SID}>
-                  <td className="py-2 border-b border-gray-300 text-center">
-                    {item.SID}
-                  </td>
-                  <td className="py-2 border-b border-gray-300 text-center">
-                    {item.carParks}
-                  </td>
-                  <td className="py-2 border-b border-gray-300 text-center">
-                    {item.status}
-                  </td>
-                  <td className="py-2 border-b border-gray-300 text-center">
-                    <a
-                      href={item.carLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      hello
-                    </a>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -133,7 +106,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  );
+  ):(<p>No Registered Cars</p>);
 };
 
 export default Dashboard;
