@@ -27,6 +27,10 @@ function Login() {
       console.log("Invalid SID or username");
     }
   };
+
+  const handleLogout =() =>{
+    navigate("/Login")
+  };
   const handleSidChange = (e) => {
     setSid(e.target.value);
   };
@@ -82,4 +86,4 @@ function Login() {
   );
 }
 
-export default Login;
+export {Login};
