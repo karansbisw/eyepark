@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import { gql, useQuery } from "@apollo/client";
 import {useLocation} from 'react-router-dom';
+import { SearchIcon } from "@heroicons/react/solid";
+import { TextInput } from "@tremor/react";
 
 const GET_CAR_DATA = gql`
   query Query($username: String!) {
@@ -44,14 +46,17 @@ const Dashboard = () => {
   if (error) return <p>Error: {error.message}</p>;
     
   return data?(
-    <div>
-      <div className="relative w-full h-screen bg-zinc-900/90">
-        <img
-          className="absolute w-full h-full object-cover mix-blend-overlay"
-          src={loginbg}
-          alt="/"
-        />
-        <nav className="">
+    <div className="">
+      <div
+      id="top"
+      className="relative w-full sm:flex justify-between items-center p-2"
+    >
+      <h1 className="font-bold text-gray-300">Dashboard</h1>
+      <div className="py-2">
+        <TextInput icon={SearchIcon} placeholder="Search..." />
+      </div>
+    </div>
+        {/* <nav className="bg-black">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               <span className="text-white font-bold text-lg">Eyepark</span>
@@ -69,6 +74,7 @@ const Dashboard = () => {
             </div>
           </div>
         </nav>
+         */}
 
         <div className="container bg-white mx-auto p-4">
           <table className="w-full">
@@ -93,14 +99,15 @@ const Dashboard = () => {
                     {item.entryStatus?"true":"false"}
                   </td>
                   <td className="py-2 border-b border-gray-300 text-center">
-                    {item?.Bays[0]?.imageLink === null ? <p>No Image</p> : <a
-                      href={item?.Bays[0]?.imageLink[0]}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    {item?.Bays.length === 0 ?  (
+                    <p>No Image</p>
+                    ) : (
+                    <button
+                    onClick={() => window.open(item?.Bays[0]?.imageLink[0], "_blank")}
                     >
                       View Car
-                    </a>
-}
+                      </button>
+                      )}
                   </td>
                 </tr>
               ))}
@@ -108,7 +115,7 @@ const Dashboard = () => {
           </table>
         </div>
       </div>
-    </div>
+    // </div>
   ):(<p>No Registered Cars</p>);
 };
 

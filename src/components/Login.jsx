@@ -50,9 +50,9 @@ function Login() {
     
   };
 
-  // const handleLogout =() =>{
-  //   navigate("/Login")
-  // };
+  const handleLogout =() =>{
+    navigate("/Login")
+  };
   const handleSidChange = (e) => {
     setSid(e.target.value);
   };
