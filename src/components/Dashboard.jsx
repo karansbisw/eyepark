@@ -6,16 +6,17 @@ import { gql, useQuery } from "@apollo/client";
 import {useLocation} from 'react-router-dom';
 
 const GET_CAR_DATA = gql`
-query ListCarDetails($username: String!) {
-  listCarDetails(username: $username) {
-    id
-    name
-    carNum
-    studentID
-    rfidTag
-    entryStatus
+  query Query($username: String!) {
+    listCarDetails(username: $username) {
+      carNum
+      rfidTag
+      id
+      entryStatus
+      Bays {
+        imageLink
+      }
+    }
   }
-}
 `;
 
 function GetCarDataQuery (username) { 
@@ -37,6 +38,7 @@ const Dashboard = () => {
   console.log(location.state.username);
   const username  = location.state.username?location.state.username:"";
   const { loading, error, data } = GetCarDataQuery(username);
+  
   
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -72,8 +74,8 @@ const Dashboard = () => {
           <table className="w-full">
             <thead>
               <tr>
-                <th className="py-2 border-b border-gray-300">SID</th>
-                <th className="py-2 border-b border-gray-300">Car Parks</th>
+                <th className="py-2 border-b border-gray-300">Car Number</th>
+                <th className="py-2 border-b border-gray-300">Car RFID Tag</th>
                 <th className="py-2 border-b border-gray-300">Status of Car</th>
                 <th className="py-2 border-b border-gray-300">Car Image</th>
               </tr>
@@ -82,23 +84,24 @@ const Dashboard = () => {
               {data.listCarDetails.map((item) => (
                 <tr key={item.id}>
                   <td className="py-2 border-b border-gray-300 text-center">
-                    {item.id}
+                    {item.carNum}
                   </td>
                   <td className="py-2 border-b border-gray-300 text-center">
-                    {item.carNum}
+                    {item.rfidTag}
                   </td>
                   <td className="py-2 border-b border-gray-300 text-center">
                     {item.entryStatus?"true":"false"}
                   </td>
-                  {/* <td className="py-2 border-b border-gray-300 text-center">
-                    <a
-                      href={item.carLink}
+                  <td className="py-2 border-b border-gray-300 text-center">
+                    {item?.Bays[0]?.imageLink === null ? <p>No Image</p> : <a
+                      href={item?.Bays[0]?.imageLink[0]}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       View Car
                     </a>
-                  </td> */}
+}
+                  </td>
                 </tr>
               ))}
             </tbody>
