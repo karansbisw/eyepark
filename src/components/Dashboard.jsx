@@ -2,7 +2,19 @@ import React from "react";
 import loginbg from "../assets/loginbg.png";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
+import { useQuery } from "@apollo/client";
 
+
+const GET_CAR_DATA = gql`
+  query GetCarData {
+    cars {
+      SID
+      Cars Parked
+      Car Status
+      Car Link
+    }
+  }
+`;
 const Dashboard = () => {
     const navigate = useNavigate();
 
@@ -11,6 +23,11 @@ const Dashboard = () => {
         navigate("/Login");
     };
 
+
+  //   const { loading, error, data } = useQuery(GET_CAR_DATA);
+
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {error.message}</p>;
      const data = [
         {
       SID: "001",
@@ -63,6 +80,31 @@ const Dashboard = () => {
                 <th className="py-2 border-b border-gray-300">Car Image</th>
               </tr>
             </thead>
+            {/* <tbody>
+              {data.cars.map((item) => (
+                <tr key={item.SID}>
+                  <td className="py-2 border-b border-gray-300 text-center">
+                    {item.SID}
+                  </td>
+                  <td className="py-2 border-b border-gray-300 text-center">
+                    {item.carParks}
+                  </td>
+                  <td className="py-2 border-b border-gray-300 text-center">
+                    {item.status}
+                  </td>
+                  <td className="py-2 border-b border-gray-300 text-center">
+                    <a
+                      href={item.carLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Car
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody> */}
+
             <tbody>
               {data.map((item) => (
                 <tr key={item.SID}>
