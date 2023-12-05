@@ -60,7 +60,7 @@ const Dashboard = () => {
         <nav className="">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">Eyepark</span>
+              <img src="EyePark.png" alt="logo" width="185px" align="justify"/>
               <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">
                 User Dashboard
               </span>
